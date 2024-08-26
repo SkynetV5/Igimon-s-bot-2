@@ -16,8 +16,6 @@ class Help(commands.Cog) :
 
             await user.send(embed=embed)
         except:
-            random_color = RandomColorHex().random_color_hex()
-            print(random_color)
             await ctx.send("Wystąpił Błąd. Nie mogłem wysłać prywatnej wiadomości. Sprawdź, czy masz otwarte DM z botem.")
 
 
