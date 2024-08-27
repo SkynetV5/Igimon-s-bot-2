@@ -2,6 +2,14 @@ import discord
 from discord.ext import commands
 from features.random_color_embed import RandomColorHex
 
+help_commands = {
+    '!helps' : 'Wyświetla okno pomocy.',
+    '!avatar': 'Wyświetla avatar użytkownika (bez oznaczenia użytkownika - wyświetli avatar osoby wpisującej komende)',
+    '!kiss': 'Całuje danego użytkownika (!kiss osoba)',
+    '!poke': 'Zaczepia gracza (!poke osoba)'
+}
+
+
 class Help(commands.Cog) :
     def __init__(self,bot):
         self.bot = bot
@@ -10,14 +18,13 @@ class Help(commands.Cog) :
         user = ctx.message.author
         try:
             random_color = RandomColorHex().random_color_hex()
-            print(random_color)
             embed = discord.Embed(title="Pomoc - Lista Komend", description="Oto dostępne komendy:", colour=random_color)
-            embed.add_field(name="!helps", value="Wyświetla okno pomocy.", inline=False)
+            for command, description in help_commands.items():
+                embed.add_field(name=command, value=description, inline=False)
+            
 
             await user.send(embed=embed)
-        except:
-            random_color = RandomColorHex().random_color_hex()
-            print(random_color)
+        except Exception as e:
             await ctx.send("Wystąpił Błąd. Nie mogłem wysłać prywatnej wiadomości. Sprawdź, czy masz otwarte DM z botem.")
 
 
