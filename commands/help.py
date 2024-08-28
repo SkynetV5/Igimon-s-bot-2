@@ -1,21 +1,22 @@
 import discord
+from discord import app_commands
 from discord.ext import commands
 from features.random_color_embed import RandomColorHex
 
 help_commands = {
-    '!helps' : 'Wyświetla okno pomocy.',
-    '!avatar': 'Wyświetla avatar użytkownika (bez oznaczenia użytkownika - wyświetli avatar osoby wpisującej komende)',
-    '!kiss': 'Całuje danego użytkownika (!kiss osoba)',
-    '!poke': 'Zaczepia gracza (!poke osoba)'
+    '/helps' : 'Wyświetla okno pomocy.',
+    '/avatar': 'Wyświetla avatar użytkownika (bez oznaczenia użytkownika - wyświetli avatar użytkownika wpisującej komende)',
+    '/kiss': 'Całuje danego użytkownika',
+    '/poke': 'Zaczepia gracza'
 }
 
 
 class Help(commands.Cog) :
     def __init__(self,bot):
         self.bot = bot
-    @commands.command(name="helps")
-    async def help_command(self,ctx):
-        user = ctx.message.author
+    @app_commands.command(name="helps", description="Wyświetla okno pomocy.")
+    async def help_command(self,interaction: discord.Integration):
+        user = interaction.user
         try:
             random_color = RandomColorHex().random_color_hex()
             embed = discord.Embed(title="Pomoc - Lista Komend", description="Oto dostępne komendy:", colour=random_color)
@@ -23,9 +24,9 @@ class Help(commands.Cog) :
                 embed.add_field(name=command, value=description, inline=False)
             
 
-            await user.send(embed=embed)
+            await interaction.response.send_message(embed=embed,ephemeral=True)
         except Exception as e:
-            await ctx.send("Wystąpił Błąd. Nie mogłem wysłać prywatnej wiadomości. Sprawdź, czy masz otwarte DM z botem.")
+            await interaction.response.send_message("Wystąpił Błąd. Nie mogłem wysłać prywatnej wiadomości. Sprawdź, czy masz otwarte DM z botem.", ephemeral=True)
 
 
     

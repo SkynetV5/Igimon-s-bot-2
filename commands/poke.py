@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from discord import app_commands
 
 
 
@@ -7,13 +8,13 @@ class Poke(commands.Cog):
     def __init__(self,bot):
         self.bot = bot
 
-    @commands.command(name="poke")
-    async def poke_command(self,ctx, member: discord.Member = None):
+    @app_commands.command(name="poke" ,description='Zaczepia gracza')
+    async def poke_command(self,interation: discord.Integration, user: discord.User = None):
         try:
-            if member is not None:
-                await ctx.send(f"Hey {member.mention}!")
+            if user is not None:
+                await interation.response.send_message(f"Hey {user.mention}!")
         except Exception as e:
-            await ctx.send("Wystąpił Błąd. Nie mogłem wysłać prywatnej wiadomości. Sprawdź, czy masz otwarte DM z botem.")
+            await interation.response.send_message("Wystąpił Błąd. Nie mogłem wysłać prywatnej wiadomości. Sprawdź, czy masz otwarte DM z botem.", ephemeral=True)
 
 
 

@@ -1,23 +1,24 @@
 import discord
 from discord.ext import commands
+from discord import app_commands
 from features.random_color_embed import RandomColorHex
 
 class Avatar(commands.Cog):
     def __init__(self,bot):
         self.bot = bot
 
-    @commands.command(name="avatar")
-    async def avatar_command(self,ctx,member: discord.Member = None):
+    @app_commands.command(name="avatar", description='Wyświetla avatar użytkownika (bez oznaczenia - wyświetli avatar użytkownika wpisującej komende)')
+    async def avatar_command(self,interaction: discord.Integration,user: discord.User = None):
         try:
-            if member is None:
-                member = ctx.author
+            if user is None:
+                user = interaction.user
             random_color = RandomColorHex().random_color_hex()
-            embed = discord.Embed(title=f"Avatar użytkownika {member.display_name}", color=random_color)
-            embed.set_image(url=member.avatar)
+            embed = discord.Embed(title=f"Avatar użytkownika {user.display_name}", color=random_color)
+            embed.set_image(url=user.avatar)
 
-            await ctx.send(embed=embed)
+            await interaction.response.send_message(embed=embed)
         except Exception as e:
-            await ctx.send("Wystąpił Błąd. Nie mogłem wysłać prywatnej wiadomości. Sprawdź, czy masz otwarte DM z botem.")
+            await interaction.response.send_message("Wystąpił Błąd. Nie mogłem wysłać prywatnej wiadomości. Sprawdź, czy masz otwarte DM z botem.", ephemeral=True)
 
 async def setup(bot):
     print("Ładowanie Coga: Avatar")

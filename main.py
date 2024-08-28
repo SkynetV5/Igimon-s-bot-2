@@ -1,56 +1,56 @@
 from typing import Final
 import os
-from discord.ext import commands
 import discord
 import logging
+from discord.ext import commands
+from discord import app_commands
 from dotenv import load_dotenv
 import asyncio
-from commands.help import Help
 
 load_dotenv()
 TOKEN: Final[str] = os.getenv('DISCORD_TOKEN')
 
-intents = discord.Intents.default()
-intents.message_content = True
+class IgmionsBot(commands.Bot):
+    def __init__(self):
+        intents = discord.Intents.default()
+        intents.message_content = True
+        super().__init__(command_prefix='!', intents=intents)
+        
 
-bot = commands.Bot(command_prefix='!', intents=intents)
+    async def load_extensions(self):
+        for filename in os.listdir('./commands'):
+            if filename.endswith('.py') and filename != '__init__.py':
+                try:
+                    await self.load_extension(f'commands.{filename[:-3]}')
+                    print(f'Loaded extension: {filename}')
+                except Exception as e:
+                    print(f'Failed to load extension {filename}: {e}')
+    
 
-async def load_extensions():
-    for filename in os.listdir('./commands'):
-        if filename.endswith('.py') and filename != '__init__.py':
-            try:
-                await  bot.load_extension(f'commands.{filename[:-3]}')
-                print(f'Loaded extension: {filename}')
-            except Exception as e:
-                print(f'Failed to load extension {filename}: {e}')
+    async def setup_hook(self):
+        # Ładowanie rozszerzeń
+        await self.load_extensions()
+       
+        # Synchronizacja komend
+        try:
+            synced_commands = await self.tree.sync()
+            print(f'Synced {len(synced_commands)} commands')
+        except Exception as e:
+            print(f'Failed to sync commands: {e}')
+        
 
-client = discord.Client(intents=intents)
+    async def on_ready(self):
+        print(f'We have logged in as {self.user}')
+    async def on_message(self, message: discord.Message):
+        # Ignorowanie wiadomości wysłanych przez samego bota
+        if message.author == self.user:
+            return
 
-@bot.event
-async def on_ready():
-    print(f'We have logged in as {bot.user}')
-
-@client.event
-async def on_message(message):
-    if message.author == client.user:
-        return
-
-    if message.content.startswith('$hello'):
-        await message.channel.send('Hello!')
-
-handler = handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
-
-# @bot.command
-# async def joined(ctx, member: discord.Member):
-#     await ctx.send( await ctx.send(f'{member.name} joined {discord.utils.format_dt(member.joined_at)}'))
-
-# bot.run(token=TOKEN, log_handler=handler)
-
-async def main():
-    await load_extensions()
-    await bot.start(TOKEN)
+    async def main(self):
+        await self.start(TOKEN)
 
 if __name__ == "__main__":
-    asyncio.run(main())
-# client.run()
+
+    bot = IgmionsBot()
+    asyncio.run(bot.main())
 
