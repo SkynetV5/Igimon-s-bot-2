@@ -10,9 +10,12 @@ class Kiss(commands.Cog):
         self.bot = bot
     @app_commands.command(name="kiss", description='Całuje danego użytkownika')
     async def kiss_command(self,interaction: discord.Integration ,user: discord.User = None):
-        kiss_list = ['całuje ', 'namiętnie całuje', 'nie odwzajemnia twojego całusa']
-        random_number = randint(0,len(kiss_list))
-        await interaction.response.send_message(f"{interaction.user.display_name} {kiss_list[random_number]} {user.mention}")
+        try:
+            kiss_list = ['całuje ', 'namiętnie całuje', 'nie odwzajemnia twojego całusa']
+            random_number = randint(0,len(kiss_list))
+            await interaction.response.send_message(f"{interaction.user.display_name} {kiss_list[random_number]} {user.mention}")
+        except Exception as e:
+            await interaction.response.send_message("Wystąpił Błąd. Nie mogłem wysłać prywatnej wiadomości. Sprawdź, czy masz otwarte DM z botem.", ephemeral=True)
 
     
 async def setup(bot):

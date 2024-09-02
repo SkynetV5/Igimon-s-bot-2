@@ -16,7 +16,6 @@ class Help(commands.Cog) :
         self.bot = bot
     @app_commands.command(name="helps", description="Wyświetla okno pomocy.")
     async def help_command(self,interaction: discord.Integration):
-        user = interaction.user
         try:
             random_color = RandomColorHex().random_color_hex()
             embed = discord.Embed(title="Pomoc - Lista Komend", description="Oto dostępne komendy:", colour=random_color)
