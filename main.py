@@ -58,22 +58,28 @@ class IgmionsBot(commands.Bot):
             
             config = self._load_config()
 
-            if config.get("MESSAGE_ROLE_SEND") == False:
-                channel_name = "role-roles"
+            channel_name = "role-roles"
+            guild = discord.utils.get(self.guilds)
+            channel = discord.utils.get(self.get_all_channels(), name=channel_name)
+            embed_role, view_role = role_messages(guild)
 
-                channel = discord.utils.get(self.get_all_channels(), name=channel_name)
-                guild = discord.utils.get(self.guilds)
+            if config.get("MESSAGE_ROLE_SEND") == False:
                 if not channel:
                     channel = await guild.create_text_channel(name=channel_name)
 
                 if channel:
                     guild = channel.guild
-                    embed, view = role_messages(guild)
-                    await channel.send(embed=embed, view=view)
+                    message = await channel.send(embed=embed_role, view=view_role)
                     config['MESSAGE_ROLE_SEND'] = True
+                    config['MESSAGE_ROLE_ID'] = message.id
                     self._save_config(config)
-
-
+            else:
+                message_id = config['MESSAGE_ROLE_ID']
+                message = await channel.fetch_message(message_id)
+                if message:
+                    embed_role, view_role = role_messages(guild)
+                    await message.edit(embed=embed_role, view=view_role)    
+            
             if config.get("MESSAGE_RULES_SEND") == False:
                 channel_name = 'regulamin-rules'
 

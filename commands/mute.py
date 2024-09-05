@@ -14,7 +14,7 @@ class Mute(commands.Cog):
             mute_role = discord.utils.get(interaction.guild.roles, name="Muted")
             if not mute_role:
                     mute_permisions = discord.Permissions(send_messages=False, speak=False, connect=True, view_channel=True)
-                    color = discord.Color(0x000000)
+                    color = discord.Color(0x010101)
                     bot_role = discord.utils.get(interaction.guild.roles, name="Igimon's Bot 2")
                     mute_role_create = CreateRole(name="Muted",color=color,permissions=mute_permisions) 
                     mute_role = await mute_role_create.create_role(interaction)
