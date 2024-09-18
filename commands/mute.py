@@ -11,13 +11,14 @@ class Mute(commands.Cog):
     @app_commands.command(name="mute",description="Wycisza danego użytkownika")
     async def mute_command(self, interaction: discord.Integration, user: discord.User, reason: Optional[str]=None):
         try:
-            mute_role = discord.utils.get(interaction.guild.roles, name="Muted")
+            guild = interaction.guild
+            mute_role = discord.utils.get(guild.roles, name="Muted")
             if not mute_role:
                     mute_permisions = discord.Permissions(send_messages=False, speak=False, connect=True, view_channel=True)
                     color = discord.Color(0x010101)
-                    bot_role = discord.utils.get(interaction.guild.roles, name="Igimon's Bot 2")
+                    bot_role = discord.utils.get(guild.roles, name="Igimon's Bot 2")
                     mute_role_create = CreateRole(name="Muted",color=color,permissions=mute_permisions) 
-                    mute_role = await mute_role_create.create_role(interaction)
+                    mute_role = await mute_role_create.create_role_by_integration(interaction)
                     
                     if bot_role:
                         await mute_role.edit(position=bot_role.position - 1)
